@@ -44,7 +44,24 @@ int stl_lower_bound(int x){
 
 }
 
+// branchless stl implementation 
 
+int branchless_stl_lower_bound(int x){
+    int* base = t;
+    int len = n;
+
+    while(len>1){
+        int half = len / 2;
+        len-=half;
+        __builtin_prefetch(&base[len/2-1]);
+        __builtin_prefetch(&base[len/2 - 1 + half]);
+        base += (base[half-1]<x) * half;
+
+        
+    }return *base;
+
+
+}
 
 int main(){
 
