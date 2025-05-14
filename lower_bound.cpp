@@ -13,6 +13,7 @@ const int n = sizeof(a)/sizeof(a[0]);
 //eytzinger array layout
 int e[n+1];
 
+
 // textbook binary search implementation
 int naive_lower_bound(int x){
 
@@ -81,6 +82,17 @@ void eytzinger(int k = 1){
 
 }
 
+int eytzinger_lower_bound(int x){
+    int k = 1;
+    while(k<=n){
+        __builtin_prefetch(e+k*16);
+        k = 2*k+(e[k] < x);
+
+    }
+    k>>=__builtin_ffs(~k);
+    return e[k];
+}
+
 int main(){
 
     
@@ -90,6 +102,9 @@ int main(){
     // std::cout << stl_lower_bound(6) <<std::endl;
     // std::cout <<branchless_stl_lower_bound(17) << std::endl;
     eytzinger();
+    //aligning the eytzinger array
+    int* e = static_cast<int*>(::operator new(4 * (n + 1), static_cast<std::align_val_t>(64)));
+    std::cout << eytzinger_lower_bound(17) << std::endl;
 
     return 0;
 
